@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyuan.boot.mapper.EventOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.zyuan.boot.entity.EventOrder">
+        <result property="id" column="id"/>
+        <result property="eventName" column="event_name"/>
+        <result property="eventType" column="event_type"/>
+        <result property="orderNo" column="order_no"/>
+    </resultMap>
+
+    <sql id="BaseColumn">
+        `id`, event_name, event_type, order_no
+    </sql>
+
+    <insert id="batchInsertByValues" parameterType="com.zyuan.boot.entity.EventOrder">
+        insert into event_order
+        (<include refid="BaseColumn"/>)
+        values
+        <foreach collection="eventOrders" item="item" separator=",">
+            (
+            #{item.id}, #{item.eventName}, #{item.eventType}, #{item.orderNo}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="batchInsertBySet" parameterType="com.zyuan.boot.entity.EventOrder">
+        <foreach collection="eventOrders" item="item" separator=";">
+            insert into event_order
+            set (`id` = #{item.id}, event_name = #{item.eventName},
+            event_type = #{item.eventType}, order_no = #{item.orderNo})
+        </foreach>
+    </insert>
+
+    <update id="batchUpdate" parameterType="com.zyuan.boot.entity.EventOrder">
+        update event_order
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="event_name = case" suffix="end,">
+                <foreach collection="eventOrders" item="item">
+                    when `id` = #{item.id} then #{item.eventName}
+                </foreach>
+            </trim>
+            <trim prefix="event_type = case" suffix="end,">
+                <foreach collection="eventOrders" item="item">
+                    when `id` = #{item.id} then #{item.eventType}
+                </foreach>
+            </trim>
+            <trim prefix="order_no = case" suffix="end">
+                <foreach collection="eventOrders" item="item">
+                    when `id` = #{item.id} then #{item.orderNo}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="eventOrders" item="item" open="(" close=")" separator=",">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <update id="batchUpdateByForeach" parameterType="com.zyuan.boot.entity.EventOrder">
+        <foreach collection="eventOrders" item="item" separator=";">
+            update event_order
+            set `event_name` = #{item.eventName},
+                `event_type` = #{item.eventType},
+                `order_no` = #{item.orderNo}
+            where `id` = #{item.id}
+        </foreach>
+    </update>
+
+    <update id="batchUpdateByMap" parameterType="java.util.Map">
+        update event_order
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="event_name = case" suffix="end,">
+                <foreach collection="eventOrderMap.entrySet()" item="value" index="key">
+                    when `id` = #{key} then #{value.eventName}
+                </foreach>
+            </trim>
+            <trim prefix="event_type = case" suffix="end,">
+                <foreach collection="eventOrderMap.entrySet()" item="value" index="key">
+                    when `id` = #{key} then #{value.eventType}
+                </foreach>
+            </trim>
+            <trim prefix="order_no = case" suffix="end">
+                <foreach collection="eventOrderMap.entrySet()" item="value" index="key">
+                    when `id` = #{key} then #{value.orderNo}
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="eventOrderMap.entrySet()" item="value" index="key" open="(" close=")" separator=",">
+            #{key}
+        </foreach>
+    </update>
+
+</mapper>
