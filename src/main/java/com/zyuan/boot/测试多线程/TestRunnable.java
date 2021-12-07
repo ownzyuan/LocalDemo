@@ -58,6 +58,40 @@ class ImplementRunnable04 implements Runnable{
     }
 }
 
+// 测试priority(优先级)
+class ImplementRunnable05 implements Runnable{
+    @Override
+    public void run() {
+        for (int i = 0; i < 3; i++) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + "运行" + i);
+        }
+    }
+}
+
+// 测试yield(礼让)
+class ImplementRunnable06 implements Runnable{
+    @Override
+    public void run() {
+        for (int i = 0; i < 3; i++) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + "运行" + i);
+            if (i == 1) {
+                System.out.println(Thread.currentThread().getName() + "开始礼让");
+                Thread.yield();
+            }
+        }
+    }
+}
+
 public class TestRunnable {
     // 测试线程运行
     /*
@@ -103,6 +137,8 @@ public class TestRunnable {
     }
      */
 
+    // 测试interrupt方法
+    /*
     public static void main(String[] args) {
         ImplementRunnable04 testInterrupt = new ImplementRunnable04();
         Thread t1 = new Thread(testInterrupt);
@@ -113,5 +149,29 @@ public class TestRunnable {
             e.printStackTrace();
         }
         t1.interrupt();
+    }
+     */
+
+    // 测试priority，虽然有优先级，但是线程调度还是由cpu决定
+    /*
+    public static void main(String[] args) {
+        Thread t1 = new Thread(new ImplementRunnable05(),"最低优先级priority");
+        Thread t2 = new Thread(new ImplementRunnable05(),"中等优先级priority");
+        Thread t3 = new Thread(new ImplementRunnable05(),"最高优先级priority");
+        t1.setPriority(Thread.MIN_PRIORITY);
+        t2.setPriority(Thread.NORM_PRIORITY);
+        t3.setPriority(Thread.MAX_PRIORITY);
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+     */
+
+    // 测试yield
+    public static void main(String[] args) {
+        Thread threadA = new Thread(new ImplementRunnable06(), "线程A");
+        Thread threadB = new Thread(new ImplementRunnable06(), "线程B");
+        threadA.start();
+        threadB.start();
     }
 }
