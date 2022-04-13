@@ -15,6 +15,11 @@
         `id`, event_name, event_type, order_no
     </sql>
 
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="BaseColumn"/>
+        from event_order limit 2;
+    </select>
+
     <insert id="batchInsertByValues" parameterType="com.zyuan.boot.entity.EventOrder">
         insert into event_order
         (<include refid="BaseColumn"/>)

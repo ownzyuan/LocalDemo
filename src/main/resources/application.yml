@@ -7,9 +7,44 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
+  data:
+    mongodb:
+      uri: "mongodb://localhost:27017/test"
+  redis:
+    enabled: true
+    timeout: 5000
+#    lettuce:
+#      pool:
+#        # 连接池最大连接数（为负则没有限制）
+#        max-active: 5000
+#        # 连接池最大阻塞等待时间（为负则没有限制）
+#        max-wait: -1
+#        # 连接池中最大空闲连接
+#        max-idle: 30
+#        # 连接池中最小空闲连接
+#        min-idle: 5
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual
+        concurrency: 5
+        max-concurrency: 5
+    publisher-returns: true
+    template:
+      mandatory: true
+    connection-timeout: 2000
 
 mybatis:
   type-aliases-package: com.zyuan.boot.entity
   mapper-locations: classpath:mybatis/mapper/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

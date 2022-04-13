@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,20 @@ public class EventOrderMapperTest {
 
     @Autowired
     private EventOrderMapper eventOrderMapper;
+
+    @Test
+//    @Transactional(rollbackFor = Exception.class)
+    public void selectAll() {
+        List<EventOrder> eventOrders02 = selectAll02();
+        List<EventOrder> eventOrders01 = eventOrderMapper.selectAll();
+        System.out.println("@7112ce6");
+        System.out.println("@20a967fe");
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public List<EventOrder> selectAll02() {
+        return eventOrderMapper.selectAll();
+    }
 
     @Test
     public void batchInsertByValues() {

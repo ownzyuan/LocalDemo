@@ -10,6 +10,8 @@ import java.util.Map;
 @Mapper
 public interface EventOrderMapper {
 
+    List<EventOrder> selectAll();
+
     void batchInsertByValues(@Param("eventOrders") List<EventOrder> eventOrders);
 
     void batchInsertBySet(@Param("eventOrders") List<EventOrder> eventOrders);
