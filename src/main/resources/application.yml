@@ -31,6 +31,7 @@ spring:
     port: 5672
     username: guest
     password: guest
+    #虚拟host 初始的就为/
     virtual-host: /
     listener:
       simple:
