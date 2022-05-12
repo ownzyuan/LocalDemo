@@ -12,6 +12,9 @@ public interface IRedisService {
     // set值进缓存，如果已经存在该key，则不插入，返回false
     boolean setIfAbsent(final String key, String value);
 
+    // set集合，添加
+    Long add(final String key, String ... values);
+
     // 批量添加值进缓存中
     boolean multiSet(Map<String,String> maps);
 
@@ -36,6 +39,9 @@ public interface IRedisService {
 
     // 从左至右获取集合元素
     List lRange(final String key, long start, long end);
+
+    // 通过key查询set集合
+    Set members(final String key);
 
     // 通过右插法添加集合（先进先出）
     Long rightPushAll(final String key, Collection value);

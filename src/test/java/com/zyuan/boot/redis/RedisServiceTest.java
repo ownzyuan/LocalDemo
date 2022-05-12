@@ -1,6 +1,7 @@
 package com.zyuan.boot.redis;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.zyuan.boot.redis.dto.ThisIsDTO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -27,25 +28,16 @@ public class RedisServiceTest {
         List<ThisIsDTO> addDTOList = getAddDTOList();
         String listToString = JSONArray.toJSONString(addDTOList);
         boolean setSuccess = redisService.set(key, listToString);
-        System.out.println("插入是否成功：" + setSuccess);
+        System.out.println("set是否成功：" + setSuccess);
         boolean hasKey = redisService.hasKey(key);
         System.out.println("key是否存在：" + hasKey);
+        boolean setIfAbsentSuccess = redisService.setIfAbsent(key, listToString);
+        System.out.println("setIfAbsent是否成功：" + setIfAbsentSuccess);
         String thisDTOListObject = redisService.get(key);
         List<ThisIsDTO> thisIsDTOList = JSONArray.parseArray(thisDTOListObject, ThisIsDTO.class);
         if (CollectionUtils.isNotEmpty(thisIsDTOList)) {
             System.out.println(thisIsDTOList.toString());
         }
-    }
-
-    @Test
-    public void testSetIfAbsent() {
-        String key = "list_to_string_01";
-        boolean hasKey = redisService.hasKey(key);
-        System.out.println("key是否存在：" + hasKey);
-        List<ThisIsDTO> addDTOList = getAddDTOList();
-        String listToString = JSONArray.toJSONString(addDTOList);
-        boolean setSuccess = redisService.setIfAbsent(key, listToString);
-        System.out.println("插入是否成功：" + setSuccess);
     }
 
     @Test
@@ -92,8 +84,11 @@ public class RedisServiceTest {
     }
 
     @Test
-    public void testLRange() {
+    public void testPushAndRange() {
         String key = "right_push_all_01";
+        List<ThisIsDTO> addDTOList = getAddDTOList();
+        Long number = redisService.rightPushAll(key, addDTOList);
+        System.out.println("添加数量：" + number);
 //        List<ThisIsDTO> dtoList = redisService.lRange(key, 0, -1);
 //        System.out.println(dtoList.toString());
 //        for (ThisIsDTO thisIsDTO : dtoList) {
@@ -110,11 +105,31 @@ public class RedisServiceTest {
     }
 
     @Test
-    public void testRightPushAll() {
-        String key = "right_push_all_01";
-        List<ThisIsDTO> addDTOList = getAddDTOList();
-        Long result = redisService.rightPushAll(key, addDTOList);
-        System.out.println(result);
+    public void testAddAndMembers() {
+        String key01 = "add_string_set_01";
+        Long number = redisService.add(key01, "set_value_01", "set_value_02", "set_value_03");
+        System.out.println("成功添加string类型set集合，一共" + number + "个元素");
+        Set<String> stringSet = redisService.members(key01);
+        for (String concurrentValue : stringSet) {
+            System.out.println(concurrentValue);
+        }
+
+        String key02 = "add_dto_set_01";
+        Long allAddNum = 0L;
+        Set<ThisIsDTO> getSet = new HashSet<>();
+        Set<ThisIsDTO> addDTOSet = getAddDTOSet();
+        for (ThisIsDTO thisIsDTO : addDTOSet) {
+            String jsonSet = JSONObject.toJSONString(thisIsDTO);
+            Long addNum = redisService.add(key02, jsonSet);
+            allAddNum = allAddNum + addNum;
+        }
+        System.out.println("成功添加dto类型set集合，一共" + allAddNum + "个元素");
+        Set<String> thisIsDTOSet = redisService.members(key02);
+        for (String thisIsDTOJson : thisIsDTOSet) {
+            ThisIsDTO thisIsDTO = JSONObject.parseObject(thisIsDTOJson, ThisIsDTO.class);
+            getSet.add(thisIsDTO);
+        }
+        System.out.println("成功取出set集合：" + getSet.toString());
     }
 
     @Test
@@ -137,7 +152,8 @@ public class RedisServiceTest {
         System.out.println("批量删除了：" + deleteKeyNumber + "个key");
         boolean deleteMulti = redisService.delete("need_delete_key_04", "need_delete_key_05");
         System.out.println("多个key删除是否成功：" + deleteMulti);
-        Long deleteByPreNumber = redisService.deleteByPre("123456");
+//        Long deleteByPreNumber = redisService.deleteByPre("123456");
+        Long deleteByPreNumber = redisService.deleteByPre("need_delete_key");
         System.out.println("通过key前缀删除了：" + deleteByPreNumber + "个key");
     }
 
@@ -154,6 +170,21 @@ public class RedisServiceTest {
             addDTOList.add(dto);
         }
         return addDTOList;
+    }
+
+    private Set<ThisIsDTO> getAddDTOSet() {
+        Set<ThisIsDTO> addDTOSet = new HashSet<>();
+        for (int i = 100; i <= 104; i++) {
+            ThisIsDTO dto = new ThisIsDTO();
+            String name = "name" + i + i;
+            Integer age = i*3;
+            Long time = i*20L;
+            dto.setName(name);
+            dto.setAge(age);
+            dto.setTime(time);
+            addDTOSet.add(dto);
+        }
+        return addDTOSet;
     }
 
 }

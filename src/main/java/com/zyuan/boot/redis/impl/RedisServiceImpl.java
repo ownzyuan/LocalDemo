@@ -63,6 +63,17 @@ public class RedisServiceImpl implements IRedisService {
     }
 
     @Override
+    public Long add(String key, String... values) {
+        Long result = null;
+        try {
+            result = redisTemplate.opsForSet().add(key, values);
+        } catch (Exception e) {
+            log.error("redis set集合add失败：" + e.getMessage());
+        }
+        return result;
+    }
+
+    @Override
     public boolean multiSet(Map<String, String> maps) {
         boolean result = false;
         try {
@@ -177,6 +188,17 @@ public class RedisServiceImpl implements IRedisService {
             result = redisTemplate.opsForList().range(key, start, end);
         } catch (Exception e) {
             log.error("redis range失败：" + e.getMessage());
+        }
+        return result;
+    }
+
+    @Override
+    public Set members(String key) {
+        Set result = null;
+        try {
+            result = redisTemplate.opsForSet().members(key);
+        } catch (Exception e) {
+            log.error("redis 获取set集合元素失败：" + e.getMessage());
         }
         return result;
     }
