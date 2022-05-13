@@ -9,6 +9,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,25 @@ public class TestExportByEasypoi implements ITestExportByEasypoi{
         }
         String excelName = "第一个导出的Excel";
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<TestEasypoi> testTransactional() {
+        List<TestEasypoi> allData01 = testEasypoiMapper.selectAllData();
+        TestEasypoi updatePoi = new TestEasypoi();
+        updatePoi.setId(7L);
+        updatePoi.setName("被改了");
+        testEasypoiMapper.updateTestEasyPoi(updatePoi);
+        List<TestEasypoi> allData02 = extracted();
+        return allData01;
+    }
+
+    private List<TestEasypoi> extracted() {
+        List<TestEasypoi> allData02 = testEasypoiMapper.selectAllData();
+        System.out.println(123);
+        System.out.println(1/0);
+        return allData02;
     }
 
     private Workbook getSheets(List<TestEasypoi> allData) {

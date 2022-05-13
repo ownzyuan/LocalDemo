@@ -23,4 +23,10 @@
         order by `order_no` asc
     </select>
 
+    <update id="updateTestEasyPoi" parameterType="com.zyuan.boot.entity.TestEasypoi">
+        update t_test_easypoi
+        set `name` = #{testEasypoi.name}
+        where `id` = #{testEasypoi.id}
+    </update>
+
 </mapper>
