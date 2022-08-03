@@ -24,7 +24,8 @@ public class TestFuture {
 //        testWhenComplete();
 //        testHandle();
 //        testThenCombineAndThenAcceptBothAndRunAfterBoth();
-        testApplyToEitherAndAcceptEitherAndRunAfterEither();
+//        testApplyToEitherAndAcceptEitherAndRunAfterEither();
+        testThenCompose();
     }
 
     private static void testExecutorService() throws InterruptedException, ExecutionException {
@@ -485,14 +486,12 @@ public class TestFuture {
     }
 
     /**
-     * applyToEither：将2个CompletableFuture组合起来，其中一个任务完成执行后就会执行该方法（先抛出异常则不做处理），参数为完成任务的执行结果，且applyToEither可以指定返回值
-     * acceptEither：将2个CompletableFuture组合起来，其中一个任务完成执行后就会执行该方法（先抛出异常则不做处理），参数为完成任务的执行结果，但acceptEither无返回值
-     * runAfterEither：将2个CompletableFuture组合起来，其中一个任务完成执行后就会执行该方法（先抛出异常则不做处理），但无参数，无返回值
-     * 注：3个方法都有各自的异步执行，applyToEither -> applyToEitherAsync， acceptEither -> acceptEitherAsync， runAfterEither -> runAfterEitherAsync
+     * thenCompose：任务完成后，就会执行该方法，参数为完成任务的执行结果，然后thenCompose会返回一个新的CompletableFuture实例，该实例执行结果会返回给thenCompose
+     * 注：thenCompose方法有异步执行，thenCompose -> thenComposeAsync
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    private static void test() throws InterruptedException, ExecutionException {
+    private static void testThenCompose() throws InterruptedException, ExecutionException {
         CompletableFuture<Double> future01 = CompletableFuture.supplyAsync(() -> {
             System.out.println("步骤一开始 ->" + Thread.currentThread());
             try {
@@ -516,6 +515,15 @@ public class TestFuture {
 //            int a = 1/0;
             System.out.println("thenCompose完成 ->" + Thread.currentThread());
             return CompletableFuture.supplyAsync(() -> {
+                System.out.println("thenCompose返回的supplyAsync开始 ->" + Thread.currentThread());
+                try {
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                    System.out.println("thenCompose返回的supplyAsync失败 ->" + Thread.currentThread());
+                }
+                // 抛异常
+//                int a = 1/0;
+                System.out.println("thenCompose返回的supplyAsync完成 ->" + Thread.currentThread());
                 return null;
             });
         });
