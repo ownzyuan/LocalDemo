@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyuan.boot.mapper.TestLockMapper">
+
+    <resultMap id="BaseResultMap" type="com.zyuan.boot.entity.TestLock">
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="other" column="other"/>
+        <result property="unionId" column="union_id"/>
+    </resultMap>
+
+    <sql id="BaseColumn">
+        `id`, code, other, union_id
+    </sql>
+
+    <select id="selectAllList" resultMap="BaseResultMap">
+        select <include refid="BaseColumn"/>
+        from t_test_lock
+    </select>
+
+    <insert id="batchInsert" parameterType="com.zyuan.boot.entity.TestLock">
+        INSERT INTO t_test_lock
+        (`id`, `code`, `other`, `union_id`)
+        VALUES
+        <foreach collection="testLocks" item="item" open="(" close=")" separator=",">
+            #{item.id}, #{item.code}, #{item.other}, #{item.unionId}
+        </foreach>
+        on DUPLICATE KEY
+        UPDATE `code` = VALUES(code),
+                `union_id` = VALUES(union_id),
+                `other` = VALUES(other)
+    </insert>
+
+</mapper>
