@@ -1,7 +1,6 @@
 package com.zyuan.boot.redis.测试锁;
 
 import org.apache.commons.lang3.StringUtils;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -10,9 +9,6 @@ import redis.clients.jedis.Jedis;
 
 @Service
 public class JedisLock {
-
-    @Autowired
-    private RedissonClient redissonClient;
 
     @Value("${spring.redis.host}")
     private String host = "175.178.187.5";
