@@ -12,6 +12,8 @@ public interface EventOrderMapper {
 
     List<EventOrder> selectAll();
 
+    EventOrder selectById(@Param("id") Long id);
+
     void batchInsertByValues(@Param("eventOrders") List<EventOrder> eventOrders);
 
     void batchInsertBySet(@Param("eventOrders") List<EventOrder> eventOrders);
