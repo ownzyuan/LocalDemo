@@ -25,8 +25,10 @@ spring:
 #        min-idle: 5
     database: 0
     host: 175.178.187.5
+#    host: 127.0.0.1
     port: 6379
     password: zy123456
+#    password: 123456
 #    extra:
 #      expire: 10
   rabbitmq:
@@ -45,6 +47,16 @@ spring:
     template:
       mandatory: true
     connection-timeout: 2000
+es:
+  first-host: 175.178.187.5
+  first-port: 9200
+  username: elastic
+  password: zy123456
+  charset: utf-8
+  scheme: http
+  client:
+    connectTimeOut: 5000
+    socketTimeOut: 15000
 
 mybatis:
   type-aliases-package: com.zyuan.boot.entity
