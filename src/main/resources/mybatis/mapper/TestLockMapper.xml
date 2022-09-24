@@ -24,13 +24,12 @@
         INSERT INTO t_test_lock
         (`id`, `code`, `other`, `union_id`)
         VALUES
-        <foreach collection="testLocks" item="item" open="(" close=")" separator=",">
-            #{item.id}, #{item.code}, #{item.other}, #{item.unionId}
+        <foreach collection="testLocks" item="item" separator=",">
+            (#{item.id}, #{item.code}, #{item.other}, #{item.unionId})
         </foreach>
         on DUPLICATE KEY
         UPDATE `code` = VALUES(code),
-                `union_id` = VALUES(union_id),
-                `other` = VALUES(other)
+                `union_id` = VALUES(union_id)
     </insert>
 
 </mapper>

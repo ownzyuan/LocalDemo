@@ -20,7 +20,7 @@ public class TestLockServiceImpl implements ITestLockService{
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void batchInsert(List<TestLock> testLocks) {
         List<TestLock> testLockList = selectAllList();
         testLockList.addAll(testLocks);
