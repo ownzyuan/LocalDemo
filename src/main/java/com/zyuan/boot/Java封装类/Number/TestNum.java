@@ -1,4 +1,4 @@
-package com.zyuan.boot.Java封装类;
+package com.zyuan.boot.Java封装类.Number;
 
 public class TestNum {
     public static void main(String[] args) {

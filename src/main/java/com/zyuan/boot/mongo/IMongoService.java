@@ -6,5 +6,7 @@ public interface IMongoService {
 
     void insertIntoMongo();
 
+    void insertOneToMongo();
+
     void selectCount();
 }

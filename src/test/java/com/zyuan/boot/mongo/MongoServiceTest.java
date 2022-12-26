@@ -17,6 +17,7 @@ public class MongoServiceTest {
     @Test
     public void testInsert() {
         mongoService.insertIntoMongo();
+//        mongoService.insertOneToMongo();
     }
 
     @Test
