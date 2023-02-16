@@ -52,6 +52,15 @@ public class RedisTest {
     }
 
     @Test
+    public void testSetAndDelete() {
+        String key = "test_key";
+        String value = "test_value";
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, value);
+        redisTemplate.delete(key);
+    }
+
+    @Test
     public void testList() {
         String value1 = "aaa";
         String value2 = "bbb";

@@ -2,6 +2,8 @@ package com.zyuan.boot.redis;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zyuan.boot.redis.dto.ThisIsDTO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -10,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.StopWatch;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -21,6 +24,9 @@ public class RedisServiceTest {
 
     @Autowired
     private IRedisService redisService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     public void testSetAndGet() {
@@ -105,6 +111,71 @@ public class RedisServiceTest {
     }
 
     @Test
+    public void testPush() {
+        String key = "test_push_all_01";
+        List<ThisIsDTO> addDTOList = getAddDTOList();
+        redisService.rightPushAll(key, addDTOList);
+        redisService.delete(key);
+    }
+
+    @Test
+    public void testRange() {
+        String key = "right_push_all_01";
+        List<LinkedHashMap<String, Object>> linkedHashMapList = redisService.lRange(key, 0, -1);
+//        List<ThisIsDTO> thisIsDTOList = redisService.lRange(key, 0, -1);
+        List<ThisIsDTO> thisIsDTOList = objectMapper.convertValue(linkedHashMapList, new TypeReference<List<ThisIsDTO>>() {});
+        for (ThisIsDTO thisIsDTO : thisIsDTOList) {
+            System.out.println(thisIsDTO.getAge());
+        }
+//        for (LinkedHashMap<String, Object> linkedHashMap : linkedHashMapList) {
+//            for (String concurrentKey : linkedHashMap.keySet()) {
+//                Object value = linkedHashMap.get(concurrentKey);
+//                System.out.println(concurrentKey + "--->" + value);
+//            }
+//            System.out.println("=============");
+//        }
+    }
+
+    @Test
+    public void testFastJsonConvertDuration() {
+        String key = "big_list_by_string_01";
+        List<ThisIsDTO> addDTOList = getAddDTOList();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("addDTOList转String");
+        String addDTOListStr = JSONArray.toJSONString(addDTOList);
+        stopWatch.stop();
+        addDTOList.clear();
+        stopWatch.start("addDTOListStr存redis");
+        redisService.set(key, addDTOListStr);
+        stopWatch.stop();
+        stopWatch.start("redis取出集合");
+        String thisDTOListObject = redisService.get(key);
+        stopWatch.stop();
+        stopWatch.start("字符串转回List");
+        List<ThisIsDTO> thisIsDTOList = JSONArray.parseArray(thisDTOListObject, ThisIsDTO.class);
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+    }
+
+    @Test
+    public void testObjectMapperConvertDuration() {
+        String key = "big_list_by_list_01";
+        List<ThisIsDTO> addDTOList = getAddDTOList();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("addDTOList存redis");
+        redisService.rightPushAll(key, addDTOList);
+        stopWatch.stop();
+        addDTOList.clear();
+        stopWatch.start("redis取出LinkedHashMap");
+        List<LinkedHashMap<String, Object>> linkedHashMapList = redisService.lRange(key, 0, -1);
+        stopWatch.stop();
+        stopWatch.start("LinkedHashMap转回原对象");
+        List<ThisIsDTO> thisIsDTOList = objectMapper.convertValue(linkedHashMapList, new TypeReference<List<ThisIsDTO>>() {});
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+    }
+
+    @Test
     public void testAddAndMembers() {
         String key01 = "add_string_set_01";
         Long number = redisService.add(key01, "set_value_01", "set_value_02", "set_value_03");
@@ -159,10 +230,10 @@ public class RedisServiceTest {
 
     private List<ThisIsDTO> getAddDTOList() {
         List<ThisIsDTO> addDTOList = new ArrayList<>();
-        for (int i = 8; i <= 10; i++) {
+        for (int i = 1; i <= 10; i++) {
             ThisIsDTO dto = new ThisIsDTO();
-            String name = "name" + i + i;
-            Integer age = i*30;
+            String name = "name" + i;
+            Integer age = i*3;
             Long time = i*20L;
             dto.setName(name);
             dto.setAge(age);
