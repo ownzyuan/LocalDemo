@@ -11,11 +11,11 @@ import redis.clients.jedis.Jedis;
 public class JedisLock {
 
     @Value("${spring.redis.host}")
-    private String host = "175.178.187.5";
+    private String host = "127.0.0.1";
     @Value("${spring.redis.port}")
     private Integer port = 6379;
-    @Value("${spring.redis.password}")
-    private String password = "zy123456";
+//    @Value("${spring.redis.password}")
+    private String password = "";
 
     private static final String lockKey = "lock_key";
     private static final String lockValue = "lock_value";
