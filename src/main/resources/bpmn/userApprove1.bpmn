@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="diagram_Process_1688952896389" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn2:process id="Process_1688952896389" name="业务流程_1688952896389" isExecutable="true">
+    <bpmn2:startEvent id="Event_5kqL2XO" name="发起">
+      <bpmn2:outgoing>Flow_0dzc4fe</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:endEvent id="Event_YoGihUP" name="结束">
+      <bpmn2:incoming>Flow_1648umb</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:userTask id="Activity_14vix1f" name="审批节点" camunda:assignee="${assignee_Vj2Zf5J}">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="first_role" value="" />
+          <camunda:property name="first_role_assignee" value="N" />
+          <camunda:property name="first_role_project" value="N" />
+          <camunda:property name="first_station" value="" />
+          <camunda:property name="first_self" value="N" />
+          <camunda:property name="first_station_with_speciality" value="Y" />
+          <camunda:property name="first_station_with_business_speciality" value="N" />
+          <camunda:property name="second_role" value="" />
+          <camunda:property name="second_role_assignee" value="N" />
+          <camunda:property name="second_role_project" value="N" />
+          <camunda:property name="second_assignee" value="" />
+          <camunda:property name="second_station" value="" />
+          <camunda:property name="second_self" value="N" />
+          <camunda:property name="second_station_with_speciality" value="Y" />
+          <camunda:property name="second_station_with_business_speciality" value="N" />
+          <camunda:property name="role_not_existing" value="" />
+          <camunda:property name="enable_transfer" value="Y" />
+          <camunda:property name="enable_back_first" value="Y" />
+          <camunda:property name="enable_back_any" value="N" />
+          <camunda:property name="first_assignee" value="1658858512576513" />
+          <camunda:property name="enable_stop" value="Y" />
+          <camunda:property name="enable_deadline_after_notify" value="Y" />
+          <camunda:property name="enable_deadline_before_notify" value="Y" />
+          <camunda:property name="before_notify_days" value="1" />
+          <camunda:property name="after_notify_days_step" value="3" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0dzc4fe</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1648umb</bpmn2:outgoing>
+      <bpmn2:multiInstanceLoopCharacteristics camunda:collection="assigneeList_Vj2Zf5J" camunda:elementVariable="assignee_Vj2Zf5J">
+        <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression">${nrOfCompletedInstances==1}</bpmn2:completionCondition>
+      </bpmn2:multiInstanceLoopCharacteristics>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="Flow_0dzc4fe" name="条件分支" sourceRef="Event_5kqL2XO" targetRef="Activity_14vix1f">
+      <bpmn2:extensionElements>
+        <camunda:properties>
+          <camunda:property name="condition_priority" value="1" />
+          <camunda:property name="enable_branch_condition" value="Y" />
+          <camunda:property name="condition_parse" value="${[{&#34;fieldValue&#34;:&#34;applicantDeptName&#34;,&#34;conditionValue&#34;:&#34;in&#34;,&#34;val&#34;:&#34;部门-1&#34;,&#34;isEdit&#34;:false}]}" />
+        </camunda:properties>
+      </bpmn2:extensionElements>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${applicantDeptName.contains("部门-1")}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_1648umb" sourceRef="Activity_14vix1f" targetRef="Event_YoGihUP" />
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1688952896389">
+      <bpmndi:BPMNEdge id="Flow_1648umb_di" bpmnElement="Flow_1648umb">
+        <di:waypoint x="600" y="420" />
+        <di:waypoint x="600" y="682" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dzc4fe_di" bpmnElement="Flow_0dzc4fe">
+        <di:waypoint x="600" y="128" />
+        <di:waypoint x="600" y="340" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="593" y="231" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_5kqL2XO_di" bpmnElement="Event_5kqL2XO">
+        <dc:Bounds x="582" y="92" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="589" y="68" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_YoGihUP_di" bpmnElement="Event_YoGihUP">
+        <dc:Bounds x="582" y="682" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="589" y="721" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_14vix1f_di" bpmnElement="Activity_14vix1f">
+        <dc:Bounds x="550" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
